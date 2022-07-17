@@ -28,6 +28,15 @@ class RoomControllers extends Controller
      */
     public function create()
     {
+         
+    }
+
+    public function addRoom($id) {
+        $inn = Inn::find($id);
+        $freebies = Freebie::all();
+        return view('admin.rooms.create')
+        ->with('inn', $inn)
+        ->with('freebies', $freebies);
     }
 
     /**
@@ -38,14 +47,12 @@ class RoomControllers extends Controller
      */
     public function store(Request $request)
     {
-
-
         
         $this->validate($request, [
             'room_number' => 'required',
             "number_of_beds" => 'required',
             "status" => "required",
-            "freebie_id" => "required"
+            "freebies" => "required"
         ]);
 
         $room = new Room;
@@ -53,10 +60,16 @@ class RoomControllers extends Controller
         $room->number_of_beds = $request->number_of_beds;
         $room->status = $request->status;
         $room->inn_id = $request->inn_id;
-        $room->freebie_id = $request->freebie_id;
+
+        $input = $request->all();
+        $freebies = $input['freebies'];
+        $input['freebies'] = implode(',', $freebies);
+
+        $room->freebies = $input['freebies'];
+
         $room->save();
 
-        return redirect()->back()->with('success', 'Room Added Successfully!');
+        return redirect('/admin/inns-admin/'.$request->inn_id)->with('success', 'Room Added Successfully!');
     }
 
     /**
@@ -85,9 +98,17 @@ class RoomControllers extends Controller
      */
     public function edit($id)
     {
+        $freebies = Freebie::all();
         $room = Room::find($id);
+        $room_freebies = explode(",",$room->freebies);
+        $room_rates = RoomRate::latest()->where('room_id', $id)->get();
 
-        return view('admin.rooms.edit')->with('room', $room);
+
+        return view('admin.rooms.edit')
+        ->with('freebies', $freebies)
+        ->with('room', $room)
+        ->with('room_freebies', $room_freebies)
+        ->with('room_rates', $room_rates);
     }
 
     /**
@@ -99,10 +120,11 @@ class RoomControllers extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+       $this->validate($request, [
             'room_number' => 'required',
             "number_of_beds" => 'required',
-            "status" => "required"
+            "status" => "required",
+            "freebies" => "required"
         ]);
 
         $room = Room::find($id);
@@ -110,9 +132,17 @@ class RoomControllers extends Controller
         $room->number_of_beds = $request->number_of_beds;
         $room->status = $request->status;
         $room->inn_id = $request->inn_id;
+
+        $input = $request->all();
+        $freebies = $input['freebies'];
+        $input['freebies'] = implode(',', $freebies);
+
+        $room->freebies = $input['freebies'];
+
         $room->save();
 
-        return redirect('/admin/rooms')->with('success', 'Room Updated Successfully!');
+
+        return redirect('/admin/inns-admin'.'/'.$request->inn_id)->with('success', 'Room Updated Successfully!');
     }
 
     /**

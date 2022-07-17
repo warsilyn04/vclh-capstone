@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Transaction;
+use App\Models\Room;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -34,7 +37,27 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $this->validate($request, [
+            'inn_id' => 'required',
+            'room_id' => 'required',
+            'room_rate_id' => 'required',
+        ]);
+
+        $transaction = new Transaction;
+        $transaction->user_id = Auth::user()->id;
+        $transaction->inn_id = $request->inn_id;
+        $transaction->room_id = $request->room_id;
+        $transaction->status = 1;
+        $transaction->room_rate_id = $request->room_rate_id;
+        $transaction->save();
+
+        $room = Room::find($request->room_id);
+        $room->status = 1;
+        $room->save();
+
+        return redirect()->back()->with('success', 'Added Successfully!');
+
     }
 
     /**

@@ -17,9 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('inn_name');
             $table->integer('number_of_rooms');
-            $table->integer('location_id');
-            $table->integer('freebie_id');
-            $table->string('room_image');
+            $table->double('lat', 15, 8);
+            $table->double('long', 15, 8);
+            $table->string('freebies');
+            $table->string('inn_image');
             $table->integer('user_id');
             $table->timestamps();
         });

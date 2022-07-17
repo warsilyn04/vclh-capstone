@@ -36,11 +36,11 @@ class FreebiesController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'freebie' => 'required',
+            'name' => 'required',
         ]);
 
         $freebie = new Freebie;
-        $freebie->freebie = $request->freebie;
+        $freebie->name = $request->name;
         $freebie->save();
 
         return redirect()->back();

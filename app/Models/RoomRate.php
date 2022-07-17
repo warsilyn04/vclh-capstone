@@ -13,5 +13,11 @@ class RoomRate extends Model
     public $primaryKey = 'id';
     public $timestamp = true;
 
-    
+    public function transactions() {
+        return $this->hasMany('App\Models\Transaction');
+    }
+
+    public function room() {
+        return $this->belongsTo('App\Models\Room');
+    }
 }

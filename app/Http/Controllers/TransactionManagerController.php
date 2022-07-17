@@ -8,6 +8,7 @@ use App\Models\Inn;
 use App\Models\Room;
 use App\Models\RoomRate;
 use App\Models\Freebie; 
+use App\Models\Transaction; 
 
 class TransactionManagerController extends Controller
 {
@@ -22,9 +23,14 @@ class TransactionManagerController extends Controller
         $inns = Inn::select('*')->where('user_id', $id)->get();
         $rooms = Room::select('*')->where('inn_id', $inns[0]->id)->get();
         $freebies = Freebie::all();
+        $transactions = Transaction::latest()->get();
+        $inn = Inn::where('user_id', Auth::user()->id)->get();
+
         return view('user.transactions.index')
         ->with('inns', $inns)
         ->with('rooms', $rooms)
+        ->with('inn', $inn)
+        ->with('transactions', $transactions)
         ->with('freebies', $freebies);
     }
 
@@ -46,7 +52,26 @@ class TransactionManagerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $this->validate($request, [
+            'inn_id' => 'required',
+            'room_id' => 'required',
+            'room_rate_id' => 'required',
+        ]);
+
+        $transaction = new Transaction;
+        $transaction->user_id = Auth::user()->id;
+        $transaction->inn_id = $request->inn_id;
+        $transaction->room_id = $request->room_id;
+        $transaction->status = 1;
+        $transaction->room_rate_id = $request->room_rate_id;
+        $transaction->save();
+
+        $room = Room::find($request->room_id);
+        $room->status = 1;
+        $room->save();
+
+        return redirect()->back()->with('success', 'Added Successfully!');
     }
 
     /**

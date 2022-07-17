@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('number_of_beds');
             $table->integer('status');
             $table->integer('inn_id');
-            $table->integer('freebie_id');
+            $table->string('freebies');
             $table->timestamps();
         });
     }

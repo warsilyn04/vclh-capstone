@@ -420,23 +420,28 @@ ul.dropdown-menu > li > a:hover, .navbar ul ul ul.dropdown-menu li .nav-link:hov
   transform: scale(1.1);
 }
 
-.inner-box:hover .image .overlay-box:before {
+.inner-box .image .overlay-box:before {
   opacity: 1;
   left: 0px;
 }
 
-.inner-box:hover .image .overlay-box {
+.inner-box .image .overlay-box {
   opacity: 1;
 }
 
-.inner-box:hover .image .overlay-box .overlay-content h5 {
+.inner-box .image .overlay-box .overlay-content h5 {
   -webkit-transform: translateX(0px);
   transform: translateX(0px);
 }
 
-.inner-box:hover .image .overlay-box .overlay-content p {
+.inner-box .image .overlay-box .overlay-content p {
   -webkit-transform: translateX(0px);
   transform: translateX(0px);
+}
+
+.inn-image {
+  max-height: 350px;
+  object-fit: cover;
 }
 
 .inner-box .image .overlay-box .overlay-inner {

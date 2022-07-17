@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Inn;
 use App\Models\Room;
 use App\Models\Freebie;
+use App\Models\User;
+use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
+
 
 class InnController extends Controller
 {
@@ -16,7 +20,7 @@ class InnController extends Controller
      */
     public function index()
     {
-    $inns = Inn::all();
+    $inns = Inn::latest()->get();
     $freebies = Freebie::all();
     return view('admin.inns.index')
     ->with('inns', $inns)
@@ -30,7 +34,8 @@ class InnController extends Controller
      */
     public function create()
     {
-        //
+        $freebies = Freebie::all();
+        return view('admin.inns.create')->with('freebies', $freebies);
     }
 
     /**
@@ -44,18 +49,20 @@ class InnController extends Controller
         $this->validate($request, [
             'inn_name' => 'required',
             'number_of_rooms' => 'required',
-            "location_id" => 'required',
-            "freebie_id" => 'required',
-            'room_image' => 'image|nullable|max:1999'
+            "lat" => 'required',
+            "long" => 'required',
+            "freebies" => 'required',
+            'inn_image' => 'image|nullable|max:1999'
         ]);
+ 
         
-        if($request->hasFile('room_image')) {
-            $filenameWithExt = $request->file('room_image');
+        if($request->hasFile('inn_image')) {
+            $filenameWithExt = $request->file('inn_image');
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('room_image')->getClientOriginalExtension();
+            $extension = $request->file('inn_image')->getClientOriginalExtension();
             $filenameToStore = $filename.'_'.time().'.'.$extension;
 
-            $path = $request->file('room_image')->storeAs('public/projects/room_images', $filenameToStore);
+            $path = $request->file('inn_image')->storeAs('public/inns/inns_images', $filenameToStore);
         }
         else {
             $filenameToStore = 'noimage.jpg';
@@ -64,12 +71,19 @@ class InnController extends Controller
         $inn = new Inn;
         $inn->inn_name = $request->inn_name;
         $inn->number_of_rooms = $request->number_of_rooms;
-        $inn->location_id = $request->location_id;
-        $inn->freebie_id = $request->freebie_id;
-        $inn->room_image =  $filenameToStore;
+        $inn->lat = $request->lat;
+        $inn->long = $request->long;
+
+        $input = $request->all();
+        $freebies = $input['freebies'];
+        $input['freebies'] = implode(',', $freebies);
+
+        $inn->freebies = $input['freebies'];
+        $inn->user_id = Auth::user()->id;
+        $inn->inn_image =  $filenameToStore;
         $inn->save();
 
-        return redirect()->back()->with('success', 'Inn Added Successfully!');
+        return redirect('/admin/inns-admin')->with('success', 'Inn Added Successfully!');
     }
 
     /**
@@ -83,9 +97,12 @@ class InnController extends Controller
         $inn = Inn::find($id);
         $rooms = Room::select('*')->where('inn_id', $id)->get();
         $freebies = Freebie::all();
+        $transactions = Transaction::all();
+
         return view('admin.inns.show')
         ->with('inn', $inn)
         ->with('freebies', $freebies)
+        ->with('transactions', $transactions)
         ->with('rooms', $rooms);
     }
 
@@ -98,7 +115,13 @@ class InnController extends Controller
     public function edit($id)
     {
         $inn = Inn::find($id);
-    return view('admin.inns.edit')->with('inn', $inn);
+        $freebies = Freebie::all();
+        $inn_freebies = explode(",",$inn->freebies);
+
+        return view('admin.inns.edit')
+        ->with('freebies', $freebies)
+        ->with('inn_freebies', $inn_freebies)
+        ->with('inn', $inn);
     }
 
     /**
@@ -111,22 +134,23 @@ class InnController extends Controller
     public function update(Request $request, $id)
     {
 
-
         $this->validate($request, [
             'inn_name' => 'required',
             'number_of_rooms' => 'required',
-            "location_id" => 'required',
-            'room_image' => 'image|nullable|max:1999'
+            "lat" => 'required',
+            "long" => 'required',
+            "freebies" => 'required',
+            'inn_image' => 'image|nullable|max:1999'
         ]);
-
+ 
         
-        if($request->hasFile('room_image')) {
-            $filenameWithExt = $request->file('room_image');
+        if($request->hasFile('inn_image')) {
+            $filenameWithExt = $request->file('inn_image');
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('room_image')->getClientOriginalExtension();
+            $extension = $request->file('inn_image')->getClientOriginalExtension();
             $filenameToStore = $filename.'_'.time().'.'.$extension;
 
-            $path = $request->file('room_image')->storeAs('public/projects/room_images', $filenameToStore);
+            $path = $request->file('inn_image')->storeAs('public/inns/inns_images', $filenameToStore);
         }
         else {
             $filenameToStore = 'noimage.jpg';
@@ -135,11 +159,19 @@ class InnController extends Controller
         $inn = Inn::find($id);
         $inn->inn_name = $request->inn_name;
         $inn->number_of_rooms = $request->number_of_rooms;
-        $inn->location_id = $request->location_id;
-        $inn->room_image =  $filenameToStore;
+        $inn->lat = $request->lat;
+        $inn->long = $request->long;
+
+        $input = $request->all();
+        $freebies = $input['freebies'];
+        $input['freebies'] = implode(',', $freebies);
+
+        $inn->freebies = $input['freebies'];
+        $inn->user_id = Auth::user()->id;
+        $inn->inn_image =  $filenameToStore;
         $inn->save();
 
-        return redirect('/admin/inns')->with('success', 'Inn Updated Successfully!');
+        return redirect('/admin/inns-admin')->with('success', 'Inn Updated Successfully!');
     }
 
     /**

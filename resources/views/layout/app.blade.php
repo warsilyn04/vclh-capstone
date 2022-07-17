@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>DarkPan - Bootstrap 5 Admin Template</title>
+    <title>Valencia City Lodging House</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -24,6 +24,7 @@
     <!-- Libraries Stylesheet -->
     <link href="{{asset('admin_assets/lib/owlcarousel/assets/owl.carousel.min.css')}}" rel="stylesheet">
     <link href="{{asset('admin_assets/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css')}}" rel="stylesheet" />
+    <link href="{{asset('select2/css/select2.min.css')}}" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{asset('admin_assets/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -76,6 +77,16 @@
     
     <!-- Template Javascript -->
     <script src="{{asset('admin_assets/js/main.js')}}"></script>
+    <script src="{{asset('select2/js/select2.min.js')}}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $(".tags-select").select2({
+    tags: true,
+    tokenSeparators: [',', ' ']
+})
+        });
+    </script>
 </body>
 
 </html>

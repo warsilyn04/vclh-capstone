@@ -21,4 +21,8 @@ class Inn extends Model
     public function freebie() {
         return $this->belongsTo('App\Models\Freebie');
     }
+
+    public function transactions() {
+        return $this->hasMany('App\Models\Transaction');
+    }
 }

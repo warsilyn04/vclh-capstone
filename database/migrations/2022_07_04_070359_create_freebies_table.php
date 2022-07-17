@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('freebies', function (Blueprint $table) {
             $table->id();
-            $table->string('freebie');
+            $table->string('name');
             $table->timestamps();   
         });
     }

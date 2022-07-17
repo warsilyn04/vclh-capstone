@@ -21,4 +21,12 @@ class Room extends Model
         return $this->belongsTo('App\Models\Freebie');
     }
 
+    public function transactions() {
+        return $this->hasMany('App\Models\Transaction');
+    }
+
+    public function room_rates() {
+        return $this->hasMany('App\Models\RoomRate');
+    }
+
 }

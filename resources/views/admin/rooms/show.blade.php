@@ -1,12 +1,12 @@
 @extends('layout.app')
 @section('content')
-
-<div class="row d-flex justify-content-center mt-5">
+<a href="/admin/inns-admin/{{$room->inn->id}}" class="btn btn-outline-primary mt-5 ms-5">Back</a>
+<div class="row d-flex justify-content-center mt-2">
     <div class="col-11 ">
         <div class="bg-secondary rounded h-100 p-4">
             <h1>{{$room->inn->inn_name}}</h1>
             <h2>Room Number: {{$room->room_number}}</h2>
-            <h5>Status: {{($room->status == 1) ? 'Active' : 'Inactive'}}</h5>
+            <h5>Status: {{($room->status == 1) ? 'Occupied' : 'Un-Occupied'}}</h5>
             <hr class="my-3">
             <h3 class="mb-4">Room Rates</h3>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewRoomRate">
@@ -28,10 +28,10 @@
                                 <td scope="row">{{$room_rate->number_of_hours}}</td>
                                 <td scope="row">PHP {{$room_rate->rate}}</td>
                                 <td scope="row">
-                                    <a href="/admin/room_rates/{{$room_rate->id}}/edit" class="btn btn-success">Edit</a>
+                                    <a href="/admin/room_rates-admin/{{$room_rate->id}}/edit" class="btn btn-success">Edit</a>
                                 </td>
                                 <td scope="row">
-                                    <form action="/admin/room_rates/{{$room_rate->id}}" method="post">
+                                    <form action="/admin/room_rates-admin/{{$room_rate->id}}" method="post">
                                         @csrf
                                         @method('delete')
                                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -57,7 +57,7 @@
         <div class="modal-body">
             <div class="col-sm-12 col-xl-12">
                 <div class="bg-secondary rounded h-100 p-4">
-                    <form action="{{route('room_rates.store')}}" method="post">
+                    <form action="{{route('room_rates-admin.store')}}" method="post">
                         @csrf
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Number of Hours</label>

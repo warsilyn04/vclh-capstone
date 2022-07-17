@@ -31,15 +31,6 @@ class RegisterController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-
-    // public function redirectTo() {
-    //     if(Auth()->user()->role == 1) {
-    //         return route('admin.dashboard');
-    //     }
-    //     elseif(Auth()->user()->role == 2) {
-    //         return route('user.dashboard');
-    //     }
-    // }
     /**
      * Create a new controller instance.
      *
@@ -76,7 +67,8 @@ class RegisterController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'role'=>2,
+            'role' => 2,
+            'status' => 0,
             'password' => Hash::make($data['password']),
         ]);
     }
